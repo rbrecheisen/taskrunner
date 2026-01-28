@@ -14,14 +14,14 @@ class DataManager:
     @staticmethod
     def create_file(path, fileset):
         return FileModel.objects.create(
-            _name=os.path.split(path)[1], _path=path, _fileset=fileset)
+            name=os.path.split(path)[1], path=path, fileset=fileset)
     
     @staticmethod
     def create_fileset(user, name=None):
         fileset_name = name
         if name is None or name == '':
             fileset_name = 'fileset-{}'.format(timezone.now().strftime('%Y%m%d%H%M%S'))
-        fileset = FileSetModel.objects.create(_name=fileset_name, _owner=user)
+        fileset = FileSetModel.objects.create(name=fileset_name, owner=user)
         return fileset
        
     def create_fileset_from_uploaded_files(self, user, file_paths, file_names, fileset_name):
@@ -39,7 +39,7 @@ class DataManager:
     @staticmethod
     def filesets(user):
         if not user.is_staff:
-            return FileSetModel.objects.filter(Q(_owner=user))
+            return FileSetModel.objects.filter(Q(owner=user))
         return FileSetModel.objects.all()
 
     @staticmethod
@@ -50,11 +50,11 @@ class DataManager:
     
     @staticmethod
     def fileset_by_name(fileset_name):
-        return FileSetModel.objects.filter(_name=fileset_name).first()
+        return FileSetModel.objects.filter(name=fileset_name).first()
     
     @staticmethod
     def files(fileset):
-        return FileModel.objects.filter(_fileset=fileset).all()
+        return FileModel.objects.filter(fileset=fileset).all()
 
     @staticmethod
     def delete_fileset(fileset):
@@ -68,8 +68,8 @@ class DataManager:
 
     def create_zip_file_from_fileset(self, fileset):
         files = self.files(fileset)
-        zip_file_path = os.path.join(fileset.path(), '{}.zip'.format(fileset.name()))
+        zip_file_path = os.path.join(fileset.path, '{}.zip'.format(fileset.name))
         with ZipFile(zip_file_path, 'w') as zip_obj:
             for f in files:
-                zip_obj.write(f.path(), arcname=basename(f.path()))
+                zip_obj.write(f.path, arcname=basename(f.path))
         return zip_file_path

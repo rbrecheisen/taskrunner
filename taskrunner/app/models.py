@@ -42,7 +42,7 @@ class FileModel(models.Model):
     def size(self):
         return int(math.floor(
             os.path.getsize(os.path.join(
-                settings.MEDIA_ROOT, self.path())) / 1000.0))
+                settings.MEDIA_ROOT, self.path)) / 1000.0))
 
     def __str__(self):
         return f'FileModel( \
@@ -70,7 +70,7 @@ class LogOutputModel(models.Model):
 @receiver(models.signals.post_save, sender=FileSetModel)
 def fileset_post_save(sender, instance, **kwargs):
     if not instance.path:
-        instance._path = os.path.join(settings.MEDIA_ROOT, str(instance.id))
+        instance.path = os.path.join(settings.MEDIA_ROOT, str(instance.id))
         os.makedirs(instance.path, exist_ok=False)
         instance.save()
 

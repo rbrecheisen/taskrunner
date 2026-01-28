@@ -16,7 +16,7 @@ class FileUploadManager:
             fileset = data_manager.create_fileset(request.user, fileset_name)
             for _, f in request.FILES.items():
                 with open(f.temporary_file_path(), 'rb') as f_obj:
-                    f_path = default_storage.save(f'{fileset.id()}/{f.name}', ContentFile(f_obj.read()))
+                    f_path = default_storage.save(f'{fileset.id}/{f.name}', ContentFile(f_obj.read()))
                     f_path = os.path.join(settings.MEDIA_ROOT, f_path)
                     data_manager.create_file(f_path, fileset)
                     print(f'Added file {f_path}')
@@ -31,7 +31,7 @@ class FileUploadManager:
                 for file in file_list:
                     with open(file['file_path'], 'rb') as f:
                         f_name = file['file_name']
-                        f_path = default_storage.save('{}/{}'.format(fileset.id(), f_name), ContentFile(f.read()))
+                        f_path = default_storage.save('{}/{}'.format(fileset.id, f_name), ContentFile(f.read()))
                         f_path = os.path.join(settings.MEDIA_ROOT, f_path)
                         data_manager.create_file(f_path, fileset)
-                    print(f'Added file: {file} to fileset {fileset.name()}')
+                    print(f'Added file: {file} to fileset {fileset.name}')
